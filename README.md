@@ -8,8 +8,6 @@
 
 您可以编译为 `com.coxxs.democ.dll`，与 `CQPdemo/com.coxxs.democ.json` 一起放置在酷Q的app目录下测试
 
-- - -
-
 `CQPdemo/com.coxxs.democ.json` - 样例应用的对应信息文件，包含应用的基础信息、事件列表等，请放置在酷Q的app目录下（用文本编辑器打开，复制到 http://next.cqp.cc/json 解析校验，无需使用的事件、菜单、权限请务必在此删除）
 
 `CQPdemo/cqp.h` - 酷Q SDK 头文件，通常无需修改
