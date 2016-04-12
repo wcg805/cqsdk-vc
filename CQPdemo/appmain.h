@@ -1,2 +1,2 @@
-#define CQAPPID "com.coxxs.democ" //ÇëÐÞ¸ÄAppID
+#define CQAPPID "net.wicp.minho.chat" //ÇëÐÞ¸ÄAppID
 #define CQAPPINFO CQAPIVERTEXT "," CQAPPID

@@ -5,20 +5,23 @@
 */
 
 #include "stdafx.h"
-#include "string"
-#include "cqp.h"
 #include "appmain.h" //应用AppID等信息，请正确填写，否则酷Q可能无法加载
-
-using namespace std;
 
 int ac = -1; //AuthCode 调用酷Q的方法时需要用到
 bool enabled = false;
+string strRunningDir;
 
+Chat *myChat = NULL;
+
+
+//HINSTANCE hinst=LoadLibrary(L"bin/sqlite3.dll");
+//typedef int (*p)(char*,char*);
 
 /* 
 * 返回应用的ApiVer、Appid，打包后将不会调用
 */
 CQEVENT(const char*, AppInfo, 0)() {
+	//MessageBoxA(NULL, CQAPPINFO, "", MB_OK);
 	return CQAPPINFO;
 }
 
@@ -62,6 +65,8 @@ CQEVENT(int32_t, __eventExit, 0)() {
 */
 CQEVENT(int32_t, __eventEnable, 0)() {
 	enabled = true;
+	strRunningDir = CQ_getAppDirectory(ac);
+	myChat = new Chat();
 	return 0;
 }
 
@@ -89,13 +94,17 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t sendTime, int64
 	return EVENT_IGNORE;
 }
 
-
 /*
 * Type=2 群消息
 */
 CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char *fromAnonymous, const char *msg, int32_t font) {
-
-	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+	
+	int a = myChat->GroupMessage(ac, fromGroup, fromQQ, msg);
+	//char szA[10] = {0};
+	//sprintf(szA, "%d", a);
+	//MessageBoxA(NULL, szA, "", MB_OK);
+	return a;
+	//关于返回值说明, 见“_eventPrivateMsg”函数
 }
 
 
@@ -137,7 +146,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)(int32_t subType, int32_t
 * beingOperateQQ 被操作QQ(即加群的QQ)
 */
 CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, int64_t beingOperateQQ) {
-
+	CQ_sendGroupMsg(ac, fromGroup, "欢迎新人入群~~~");
 	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
 }
 
@@ -180,6 +189,7 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)(int32_t subType, int32_t sendTime,
 
 	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
 }
+
 
 /*
 * 菜单，可在 .json 文件中设置菜单数目、函数名
